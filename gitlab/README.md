@@ -190,6 +190,11 @@ docker compose exec gitlab gitlab-rake gitlab:doctor:secrets   # 金鑰對不對
 `gitlab:doctor:secrets` 若報一堆解密失敗，代表 `gitlab-secrets.json` 不是同一份，
 回去確認第 1 步的 config tar 有沒有蓋對。
 
+### 為什麼是這套機制
+
+選型過程、排除掉的做法（熱複製整包目錄）、以及還在評估的冷複製，
+記在 [BACKUP-NOTES.md](BACKUP-NOTES.md)。
+
 ### 沒演練過的備份等於沒有備份
 
 至少每季一次，在另一台機器（或另開一份 compose、換 port）拿最新的備份完整還原一次，
