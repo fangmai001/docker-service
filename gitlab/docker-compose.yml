@@ -30,6 +30,12 @@ services:
         postgresql['shared_buffers'] = '256MB'
         postgresql['max_connections'] = 100
 
+        # --- 備份 ---
+        # 超過這個秒數的備份檔，下次 gitlab-backup create 時自動刪除（預設 7 天）
+        gitlab_rails['backup_keep_time'] = ${BACKUP_KEEP_DAYS:-7} * 86400
+        # 備份檔預設 0600，只有 root 讀得到，避免同機其他帳號翻走整包 repo
+        gitlab_rails['backup_archive_permissions'] = 0600
+
         # --- SMTP：要寄信（邀請、重設密碼）再打開 ---
         # gitlab_rails['smtp_enable'] = true
         # gitlab_rails['smtp_address'] = 'smtp.example.com'
@@ -47,7 +53,9 @@ services:
       - ./data/config:/etc/gitlab
       - ./data/logs:/var/log/gitlab
       - ./data/data:/var/opt/gitlab
-      - ./backups:/var/opt/gitlab/backups
+      # 正式環境請把 GITLAB_BACKUP_PATH 指到「專案目錄外、最好是另一顆碟」，
+      # 否則一個 rm -rf 這個資料夾就會連資料帶備份一起消失
+      - ${GITLAB_BACKUP_PATH:-./backups}:/var/opt/gitlab/backups
     # GitLab 內含 PostgreSQL，/dev/shm 太小會啟動失敗
     shm_size: 256m
     healthcheck:
