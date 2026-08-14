@@ -1,0 +1,23 @@
+# 機密設定：一律不進版控，改用 .env.example 當範本
+.env
+.env.local
+*.env
+!.env.example
+
+# 各服務的執行期資料與備份
+**/data/
+**/backups/
+**/runner/
+
+# 憑證與金鑰
+*.pem
+*.key
+*.crt
+secrets/
+
+# 編輯器 / 系統
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
