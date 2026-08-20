@@ -111,6 +111,29 @@ docker compose exec gitlab-runner gitlab-runner register
 註冊時 URL 填 `http://<你的主機IP>:8929`（不要用 `localhost`，
 runner 在另一個容器裡，localhost 指向它自己）。
 
+## LDAP（選用）
+
+要接公司內網既有的 AD，打開 `docker-compose.yml` 裡
+`GITLAB_OMNIBUS_CONFIG` 中被註解掉的 LDAP 區塊，填好這幾個欄位：
+
+| 欄位 | 說明 |
+| --- | --- |
+| `host` | 內網 AD 主機名稱或 IP |
+| `bind_dn` | 用來查詢目錄的服務帳號（DN 全名） |
+| `password` | 該服務帳號的密碼 |
+| `base` | 搜尋使用者的 base DN |
+
+- 內網走明碼 389 用 `encryption = 'plain'`；若 AD 有開 LDAPS，改成
+  `'simple_tls'` 並將 `port` 改成 `636`。
+- 改完存檔後 `docker compose up -d` 觸發 reconfigure（約 1–2 分鐘）。
+- 驗證：`docker compose logs -f gitlab` 確認沒有 `FATAL`；登入頁
+  （http://localhost:8929/users/sign_in）應該會出現 LDAP 登入選項；
+  用一組內網帳密實際登入測試。
+
+`bind_dn`/`password` 是明碼寫在 `docker-compose.yml`，且會落到容器內
+`/etc/gitlab/gitlab.rb`（即 `./data/config`）。填入真實密碼後注意別把
+`docker-compose.yml` 的敏感值 commit 上去。
+
 ## 目錄
 
 ```

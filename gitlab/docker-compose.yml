@@ -40,6 +40,22 @@ services:
         # gitlab_rails['smtp_authentication'] = 'login'
         # gitlab_rails['smtp_enable_starttls_auto'] = true
         # gitlab_rails['gitlab_email_from'] = 'gitlab@example.com'
+
+        # --- LDAP：要接公司內網 AD 再打開，填好下面欄位 ---
+        # gitlab_rails['ldap_enabled'] = true
+        # gitlab_rails['ldap_servers'] = {
+        #   'main' => {
+        #     'label' => 'LDAP',
+        #     'host' => 'ldap.internal.example.com',
+        #     'port' => 389,
+        #     'uid' => 'sAMAccountName',
+        #     'encryption' => 'plain',
+        #     'bind_dn' => 'CN=svc-gitlab,CN=Users,DC=example,DC=com',
+        #     'password' => 'change-me',
+        #     'active_directory' => true,
+        #     'base' => 'DC=example,DC=com'
+        #   }
+        # }
     ports:
       - "${GITLAB_HTTP_PORT:-8929}:${GITLAB_HTTP_PORT:-8929}"
       - "${GITLAB_SSH_PORT:-2224}:22"
